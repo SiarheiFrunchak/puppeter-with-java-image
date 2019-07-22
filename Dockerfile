@@ -36,4 +36,4 @@ RUN  apt-get update \
 
 ADD package.json package-lock.json /
 RUN npm install
-RUN echo $JAVA_HOME
+RUN export JAVA_HOME
