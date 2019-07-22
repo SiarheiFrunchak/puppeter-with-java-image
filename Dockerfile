@@ -1,4 +1,4 @@
-# A minimal Docker image with Node and Puppeteer
+# A minimal Docker image with Nodejs, Java and Puppeteer
 #
 # Based upon:
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
