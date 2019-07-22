@@ -4,14 +4,7 @@
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 
 #JAVA install
-FROM dockerfile/ubuntu
-RUN \
-  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
-  add-apt-repository -y ppa:webupd8team/java && \
-  apt-get update && \
-  apt-get install -y oracle-java8-installer && \
-  rm -rf /var/lib/apt/lists/* && \
-  rm -rf /var/cache/oracle-jdk8-installer
+
 
 FROM node:10.16.0-slim@sha256:e1a87966f616295140efb069385fabfe9f73a43719b607ed3bc8d057a20e5431
     
@@ -25,7 +18,14 @@ RUN  apt-get update \
      && apt-get install -y google-chrome-unstable --no-install-recommends \
      && rm -rf /var/lib/apt/lists/* \
      && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
-     && chmod +x /usr/sbin/wait-for-it.sh
+     && chmod +x /usr/sbin/wait-for-it.sh \
+     #JAVA install
+     echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+     add-apt-repository -y ppa:webupd8team/java && \
+     apt-get update && \
+     apt-get install -y oracle-java8-installer && \
+     rm -rf /var/lib/apt/lists/* && \
+     rm -rf /var/cache/oracle-jdk8-installer
 
 ADD package.json package-lock.json /
 RUN npm install
