@@ -15,11 +15,10 @@ RUN  apt-get update \
      && apt-get install -y google-chrome-unstable --no-install-recommends \
      && rm -rf /var/lib/apt/lists/* \
      && wget --quiet https://raw.githubusercontent.com/vishnubob/wait-for-it/master/wait-for-it.sh -O /usr/sbin/wait-for-it.sh \
-     && chmod +x /usr/sbin/wait-for-it.sh \
-     && apk add --no-cache ca-certificates openjdk8-jre-base bash
-     #&& add-apt-repository ppa:webupd8team/java \
-     #&& apt-get update \
-     #&& apt-get install oracle-java8-installer
+     && chmod +x /usr/sbin/wait-for-it.sh
+#JAVA install
+FROM alpine
+RUN apk add --no-cache ca-certificates openjdk8-jre-base bash
 
 # Install Puppeteer under /node_modules so it's available system-wide
 ADD package.json package-lock.json /
