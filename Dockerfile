@@ -19,7 +19,3 @@ RUN  apt-get update \
 #JAVA install
 FROM alpine
 RUN apk add --no-cache ca-certificates openjdk8-jre-base bash
-
-# Install Puppeteer under /node_modules so it's available system-wide
-ADD package.json package-lock.json /
-RUN npm install
