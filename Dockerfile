@@ -4,8 +4,14 @@
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 
 #JAVA install
-FROM alpine
-RUN apk add --no-cache ca-certificates openjdk8-jre-base bash
+FROM dockerfile/ubuntu
+RUN \
+  echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && \
+  add-apt-repository -y ppa:webupd8team/java && \
+  apt-get update && \
+  apt-get install -y oracle-java8-installer && \
+  rm -rf /var/lib/apt/lists/* && \
+  rm -rf /var/cache/oracle-jdk8-installer
 
 FROM node:10.16.0-slim@sha256:e1a87966f616295140efb069385fabfe9f73a43719b607ed3bc8d057a20e5431
     
@@ -23,4 +29,4 @@ RUN  apt-get update \
 
 ADD package.json package-lock.json /
 RUN npm install
-ENV JAVA_HOME /usr/lib/jvm/java/bin
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
