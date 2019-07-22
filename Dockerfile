@@ -4,45 +4,30 @@
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 
 #JAVA install
-FROM alpine:3.2
+FROM node:8-alpine
 
-# Install cURL
-RUN apk --update add curl ca-certificates tar && 
-    curl -Ls https://circle-artifacts.com/gh/andyshinn/alpine-pkg-glibc/6/artifacts/0/home/ubuntu/alpine-pkg-glibc/packages/x86_64/glibc-2.21-r2.apk > /tmp/glibc-2.21-r2.apk && 
-    apk add --allow-untrusted /tmp/glibc-2.21-r2.apk
-# Java Version
-ENV JAVA_VERSION_MAJOR 8
-ENV JAVA_VERSION_MINOR 45
-ENV JAVA_VERSION_BUILD 14
-ENV JAVA_PACKAGE       jdk
-# Download and unarchive Java
-RUN mkdir /opt && curl -jksSLH "Cookie: oraclelicense=accept-securebackup-cookie"
-  http://download.oracle.com/otn-pub/java/jdk/${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-b${JAVA_VERSION_BUILD}/${JAVA_PACKAGE}-${JAVA_VERSION_MAJOR}u${JAVA_VERSION_MINOR}-linux-x64.tar.gz 
-    | tar -xzf - -C /opt &&
-    ln -s /opt/jdk1.${JAVA_VERSION_MAJOR}.0_${JAVA_VERSION_MINOR} /opt/jdk &&
-    rm -rf /opt/jdk/*src.zip 
-           /opt/jdk/lib/missioncontrol 
-           /opt/jdk/lib/visualvm 
-           /opt/jdk/lib/*javafx* 
-           /opt/jdk/jre/lib/plugin.jar 
-           /opt/jdk/jre/lib/ext/jfxrt.jar 
-           /opt/jdk/jre/bin/javaws 
-           /opt/jdk/jre/lib/javaws.jar 
-           /opt/jdk/jre/lib/desktop 
-           /opt/jdk/jre/plugin 
-           /opt/jdk/jre/lib/deploy* 
-           /opt/jdk/jre/lib/*javafx* 
-           /opt/jdk/jre/lib/*jfx* 
-           /opt/jdk/jre/lib/amd64/libdecora_sse.so 
-           /opt/jdk/jre/lib/amd64/libprism_*.so 
-           /opt/jdk/jre/lib/amd64/libfxplugins.so 
-           /opt/jdk/jre/lib/amd64/libglass.so 
-           /opt/jdk/jre/lib/amd64/libgstreamer-lite.so 
-           /opt/jdk/jre/lib/amd64/libjavafx*.so 
-           /opt/jdk/jre/lib/amd64/libjfx*.so
-#Environment variables export
-ENV JAVA_HOME /opt/jdk
-ENV PATH ${PATH}:${JAVA_HOME}/bin
+# Default to UTF-8 file.encoding
+ENV LANG C.UTF-8
+
+# add a simple script that can auto-detect the appropriate JAVA_HOME value
+# based on whether the JDK or only the JRE is installed
+RUN { \
+		echo '#!/bin/sh'; \
+		echo 'set -e'; \
+		echo; \
+		echo 'dirname "$(dirname "$(readlink -f "$(which javac || which java)")")"'; \
+	} > /usr/local/bin/docker-java-home \
+	&& chmod +x /usr/local/bin/docker-java-home
+ENV JAVA_HOME /usr/lib/jvm/java-1.8-openjdk/jre
+ENV PATH $PATH:/usr/lib/jvm/java-1.8-openjdk/jre/bin:/usr/lib/jvm/java-1.8-openjdk/bin
+
+ENV JAVA_VERSION 8u212
+ENV JAVA_ALPINE_VERSION 8.212.04-r0
+
+RUN set -x \
+	&& apk add --no-cache \
+		openjdk8-jre="$JAVA_ALPINE_VERSION" \
+	&& [ "$JAVA_HOME" = "$(docker-java-home)" ]
 
 #Node-js and Puppeteer import
 FROM node:10.16.0-slim@sha256:e1a87966f616295140efb069385fabfe9f73a43719b607ed3bc8d057a20e5431
