@@ -3,15 +3,9 @@
 # Based upon:
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
 
-#JAVA install
-FROM openjdk:latest
-
-RUN apt-get install -y curl \
-  && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
-  && apt-get install -y nodejs \
-  && curl -L https://www.npmjs.com/install.sh | sh \
-RUN npm install -g grunt grunt-cli
-
+#Node-js and Puppeteer import
+FROM node:10.16.0-slim@sha256:e1a87966f616295140efb069385fabfe9f73a43719b607ed3bc8d057a20e5431
+    
 RUN  apt-get update \
      && apt-get install -y wget --no-install-recommends \
      && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
@@ -24,3 +18,10 @@ RUN  apt-get update \
 
 ADD package.json package-lock.json /
 RUN npm install
+
+#JAVA install
+FROM openjdk:8
+ENV JAVA_VER 8
+ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+
+RUN java -version
