@@ -23,7 +23,8 @@ ADD package.json package-lock.json /
 RUN npm install
 
 ENV JAVA_VER 8
-ENV JAVA_HOME /usr/lib/jvm/java-8-oracle
+ENV JAVA_HOME /usr/local/openjdk-8
+ENV PATH $JAVA_HOME/bin:$PATH
 
 RUN node -v
 RUN java -version
