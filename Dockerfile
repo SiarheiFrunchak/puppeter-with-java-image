@@ -2,10 +2,10 @@
 #
 # Based upon:
 # https://github.com/GoogleChrome/puppeteer/blob/master/docs/troubleshooting.md#running-puppeteer-in-docker
-FROM openjdk:8
+FROM openjdk:11
 
 RUN apt-get install -y curl \
-    && curl -sL https://deb.nodesource.com/setup_10.x | bash - \
+    && curl -sL https://deb.nodesource.com/setup_12.x | bash - \
     && apt-get install -y nodejs \
     && curl -L https://www.npmjs.com/install.sh | sh 
 
@@ -22,8 +22,8 @@ RUN apt-get update \
 ADD package.json package-lock.json /
 RUN npm install
 
-ENV JAVA_VER 8
-ENV JAVA_HOME /usr/local/openjdk-8
+ENV JAVA_VER 11
+ENV JAVA_HOME /usr/local/openjdk-11
 ENV PATH $JAVA_HOME/bin:$PATH
 
 RUN node -v
